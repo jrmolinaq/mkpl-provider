@@ -1,20 +1,64 @@
-<div>
-	<div>
-		<span class="tag">{{labels.portletNamespace}}:</span>
-		<span class="value">{{params.portletNamespace}}</span>
-	</div>
-	<div>
-		<span class="tag">{{labels.contextPath}}:</span>
-		<span class="value">{{params.contextPath}}</span>
-	</div>
-	<div>
-		<span class="tag">{{labels.portletElementId}}:</span>
-		<span class="value">{{params.portletElementId}}</span>
-	</div>
-	
-	<div>
-		<span class="tag">{{labels.configuration}}:</span>
-		<span class="value pre">{{configurationJSON}}</span>
-	</div>
-	
+<div class="column container-provider-list start">
+    <div class="column start">
+        <span class="text-big poppins bold m-bottom-9">Proveedores</span>
+        <div class="row middle m-bottom-8">
+            <span class="title-medium bold m-right-3">Proveedores existentes</span>
+            <span class="text-big bold deep-sea-green provider-amount">  {{ totalProviders }}  </span>
+        </div>
+    </div>
+    <div class="controls-container paginator-selector">
+        <form [formGroup]="selectForm">
+            <label class="deep-sea-green bold">Elementos por página:</label>
+            <select formControlName="selectControl" class="deep-sea-green bold" (change)="newValue($event.target.value)">
+                <option *ngFor="let element of elementNumber" [value]="element.value">
+                    {{element.display}}
+                </option>
+		    </select>
+        </form>
+    </div>
+    <div class="table-content">
+        <div class="table-content-header row middle">
+
+            <h3 class="deep-sea-green title-small-poppins bold item-1 sortable-container-provider-list" *ngFor="let header of tableInfo">
+                {{ header.label }}
+                <div class="sortable-container-provider-list" *ngIf="header.sortable">
+                    <button type="button" (click)="handleOrder(header.id)" class="icon-sortable">
+				                <i class="icon icon-long-down-arrow hoki text-big"></i>
+			                </button>
+                    <button type="button" (click)="handleOrder(header.id)" class="icon-sortable">
+				                <i class="icon icon-long-up-arrow hoki text-big"></i>
+			                </button>
+                </div>
+            </h3>
+
+        </div>
+
+        <div class="row provider-info middle padding: 0 10px;" *ngFor="let provider of providers">
+            <span class="text-normal deep-sea-green bold">{{ provider.id }}</span>
+            <span class="text-normal deep-sea-green">{{ provider.name | shortLargeStrings}}</span>
+            <span class="text-normal deep-sea-green">{{ provider.city }}</span>
+            <span class="text-normal deep-sea-green">{{ provider.address | shortLargeStrings}}</span>
+            <span class="text-normal deep-sea-green" [ngClass]="provider.active ? 'status-active' : 'status-inactive'">{{ provider.active ? 'Activo' : 'Inactivo' }}</span>
+            <div class="space-between">
+                <a class="action-button" title="Ver">
+                    <span class="icon icon-eye-on icon-row deep-sea-green"></span>
+                </a>
+                <a class="action-button" title="Editar" (click)="saveFilters()">
+                    <span class="icon icon-pencil icon-row deep-sea-green"></span>
+                </a>
+                <a class="action-button" title="Habilitar/Deshabilitar" (click)="disableProvider(provider.id)">
+                    <span class="icon icon-empty-list icon-row deep-sea-green"></span>
+                </a>
+            </div>
+        </div>
+
+
+        <!--  <paginator [paginator]="paginator.dataPaginator" (page)="currentPageChange($event)">
+            </paginator> -->
+
+    </div>
+
+    <a class="button-primary link-simple" href="/create/provider">
+        Crear Proveedor
+      </a>
 </div>
