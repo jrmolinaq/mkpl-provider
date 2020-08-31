@@ -7,6 +7,7 @@
 @import './commons/_status.css';
 @import './icons.css';
 @import './provider-list.component.css';
+@import './paginator.component.css';
 html,
 body {
     height: 100%;

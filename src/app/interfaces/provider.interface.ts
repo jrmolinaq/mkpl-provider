@@ -1,3 +1,4 @@
+import { DataPaginator } from './paginator.interface';
 export interface Provider {
   id: number;
   name: string;
@@ -50,4 +51,20 @@ export interface ProviderDetails extends Provider {
     subsidiaryExternalId: number;
     providerExternalId: number;
   };
+}
+
+export interface ListProviderResponse extends DataPaginator {
+  content: Provider[];
+}
+
+export interface ProviderPaginator extends DataPaginator {
+  content: Provider[];
+}
+
+export interface ListResponse extends DataPaginator {
+  content: Provider[];
+}
+
+export interface Paginator extends DataPaginator{
+  data: Provider[];
 }

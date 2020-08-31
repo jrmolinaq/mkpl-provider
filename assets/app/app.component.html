@@ -6,7 +6,7 @@
             <span class="text-big bold deep-sea-green provider-amount">  {{ totalProviders }}  </span>
         </div>
     </div>
-    <div class="controls-container paginator-selector">
+    <div class="column paginator-selector">
         <form [formGroup]="selectForm">
             <label class="deep-sea-green bold">Elementos por página:</label>
             <select formControlName="selectControl" class="deep-sea-green bold" (change)="newValue($event.target.value)">
@@ -16,7 +16,7 @@
 		    </select>
         </form>
     </div>
-    <div class="table-content">
+    <div class="table-content m-right-4 width-100 height-100 m-bottom-10">
         <div class="table-content-header row middle">
 
             <h3 class="deep-sea-green title-small-poppins bold item-1 sortable-container-provider-list" *ngFor="let header of tableInfo">
@@ -40,10 +40,10 @@
             <span class="text-normal deep-sea-green">{{ provider.address | shortLargeStrings}}</span>
             <span class="text-normal deep-sea-green" [ngClass]="provider.active ? 'status-active' : 'status-inactive'">{{ provider.active ? 'Activo' : 'Inactivo' }}</span>
             <div class="space-between">
-                <a class="action-button" title="Ver">
+                <a class="action-button" title="Ver" href="/providers/details?id={{provider.id}}">
                     <span class="icon icon-eye-on icon-row deep-sea-green"></span>
                 </a>
-                <a class="action-button" title="Editar" (click)="saveFilters()">
+                <a class="action-button" title="Editar" (click)="saveFilters()" href="/providers/edit?id={{provider.id}}">
                     <span class="icon icon-pencil icon-row deep-sea-green"></span>
                 </a>
                 <a class="action-button" title="Habilitar/Deshabilitar" (click)="disableProvider(provider.id)">
@@ -51,14 +51,12 @@
                 </a>
             </div>
         </div>
-
-
-        <!--  <paginator [paginator]="paginator.dataPaginator" (page)="currentPageChange($event)">
-            </paginator> -->
-
+        <!-- <paginator *ngIf="paginatorData?.total_elements >= limit" [paginator]="paginatorData" class="notice-paginator" (page)="currentPageChange($event)">
+        </paginator> -->
     </div>
-
-    <a class="button-primary link-simple" href="/create/provider">
+    <div class="row center end full-width">
+        <a class="button-primary link-simple" href="/providers/create">
         Crear Proveedor
       </a>
+    </div>
 </div>
