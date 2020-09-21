@@ -1,11 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i|Poppins:400,400i,500,500i,700,700i&display=swap');
+
 @import './variables/_sizes.css';
-@import './layout/_layout.css';
+
+@import './layout/_layout2.css';
 @import './layout/_margins.css';
+
 @import './commons/_fonts.css';
 @import './commons/_buttons.css';
 @import './commons/_status.css';
 @import './icons.css';
+
 @import './provider-list.component.css';
 @import './paginator.component.css';
 html,
@@ -76,4 +80,9 @@ a.link-simple.deep-sea-green,
 a.link-simple.deep-sea-green:hover {
     text-decoration: none;
     color: #0D4D64;
+}
+
+.border-none {
+  border: none;
+  background: none;
 }
