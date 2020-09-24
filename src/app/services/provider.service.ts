@@ -31,20 +31,19 @@ export class ProviderService {
   } */
 
   getProviders(
-    page:0, 
-    order = 'id', orderBy = ASC, limit = 10): 
-    Observable<Paginator> {
+    page = 0, order = 'id', orderBy = ASC, limit = 10): 
+    Observable<any> {
     const params = new HttpParams()
     .set('page', page.toString())
     .set('order_by', orderBy.toString())
     .set('order', order.toString())
     .set('limit', limit.toString());
     return this.http
-      .get<ListResponse>(`http://localhost:8081/api/provider`, { params })
+      .get<any>(`http://localhost:8080/o/ProviderCompraDigitalPortlet/api/provider/list`, { params })
       .pipe(
         map(({ content, ...paginator }) => ({
-          data: content,
-          ...paginator,
+          data: content as Provider[],
+          dataPaginator: paginator
         }))
       );
   }
@@ -61,7 +60,7 @@ export class ProviderService {
 
    toggleProvider(id: number) {
     return this.http.put(
-      `http://localhost:8081/api/provider/active/${id}`,
+      `http://localhost:8080/o/ProviderCompraDigitalPortlet/api/provider/active/${id}`,
       {}
     );
   } 

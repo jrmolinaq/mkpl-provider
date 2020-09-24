@@ -1,38 +1,33 @@
-import LiferayParams from '../types/LiferayParams'
-
 import { Component, OnInit } from '@angular/core';
 import { ProviderService } from './services/provider.service';
-import { map } from 'rxjs/operators';
+
 import { ASC, DESC } from './constants/queries';
-import { Provider, ProviderDetails } from './interfaces/provider.interface';
-import { DataPaginator } from './interfaces/paginator.interface';
+import {
+  Provider,
+  ProviderDetails
+} from './interfaces/provider.interface';
+import { Paginator } from './interfaces/paginator.interface';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-//import { SCOPES } from './constants/auth';
+import { SCOPES } from './constants/auth';
 import { HEADERS_BEHAVIOR } from './constants/provider-constants';
-//import { Auth0Service } from './services/auth0.service';
-//import { ROUTES } from './constants/routes';
 import { ProviderReturnHistoryService } from './services/provider-return-history.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 declare const Liferay: any;
 
 @Component({
-//	selector: 'app-root',
 	templateUrl: 
 		Liferay.ThemeDisplay.getPathContext() + 
 		'/o/mkpl-provider/app/app.component.html'
 })
-
 export class AppComponent implements OnInit {
-  
-  subsidiaryId: number;
   providers: Provider[];
   info: ProviderDetails;
+  dataToPaginate: Paginator;
   orderBy = true;
   order = 'id';
-  $paginator: Observable<any>;
-  paginator: DataPaginator;
+  $paginator: Observable<Paginator>;
   totalProviders = 0;
   canEdit = false;
   canCreate = false;
@@ -42,19 +37,6 @@ export class AppComponent implements OnInit {
   limit = 10;
   page = 0;
   selectForm: FormGroup;
-  // TODO se cambian nombres con guión bajo
-  paginatorData: { 
-    number: number; 
-    size: number; 
-    total_elements: number; 
-    sort: string; 
-    last: boolean; 
-    number_of_elements: number; 
-    total_pages: number; 
-    first: boolean;
-  };
-
-  
 
   elementNumber = [
     { value: 10, display: '10 elementos' },
@@ -64,27 +46,27 @@ export class AppComponent implements OnInit {
     { value: 100, display: '100 elementos' },
   ];
 
-  constructor(
-	  private providerService: ProviderService,
-            private providerHistoryService: ProviderReturnHistoryService,
-	          private fb: FormBuilder
-	  ) { }
+  constructor(private providerService: ProviderService,
+              private providerHistoryService: ProviderReturnHistoryService,
+              private fb: FormBuilder) { }
 
-  ngOnInit(): void {
-   /*  this.authService.getScopes().subscribe(scopes => {
+  ngOnInit() {
+      /* TODO traer permisos desde liferay
       this.canEdit = scopes.includes(SCOPES.updateProvider);
       this.canCreate = scopes.includes(SCOPES.createProvider);
       this.canUpdateStatus = scopes.includes(SCOPES.updateProviderStatus);
-      this.canViewDetail = scopes.includes(SCOPES.readProvider);
-    }); */
-    this.setNewPage(1, this.limit, 'id');
-	this.tableInfo = HEADERS_BEHAVIOR;
-	
-	/* this.providers = this.providerService.getProviders(this.subsidiaryId, 0, ''); */
+      this.canViewDetail = scopes.includes(SCOPES.readProvider);*/
 
-     const filters = this.providerHistoryService.getFilters(); 
+      this.canEdit = true;
+      this.canCreate = true;
+      this.canUpdateStatus = true;
+      this.canViewDetail = true;
 
-     if ( filters[0] ) {
+    this.tableInfo = HEADERS_BEHAVIOR;
+
+    const filters = this.providerHistoryService.getFilters();
+
+    if ( filters[0] ) {
       this.page = filters[1];
       this.limit = filters[2];
       this.orderBy = filters[3];
@@ -96,20 +78,19 @@ export class AppComponent implements OnInit {
       this.orderBy = true;
       this.order = 'id';
       this.setNewPage(0, this.limit);
-  	} 
-	  //this.paginator = this.providerService.getProviders(this.subsidiaryId);
+    }
   }
 
-   disableProvider(id: number) {
+  disableProvider(id: number) {
     this.providerService
       .toggleProvider(id)
-     .subscribe(
+      .subscribe(
         ({ id: elemId, active }: Provider) =>
           (this.providers = this.providers.map(elem =>
             elem.id === elemId ? { ...elem, active } : elem
           ))
       );
-  } 
+  }
 
   private setNewPage(page: number, limit: number, order = this.order) {
     this.selectForm = this.fb.group({
@@ -118,18 +99,14 @@ export class AppComponent implements OnInit {
 
     const orderBy = this.orderBy ? ASC : DESC;
 
-    this.providerService.getProviders(page = 0, order, orderBy, limit)
-      .pipe(map(({ data, ...paginatorData }) => {
-        return{
-          providers: data,
-          paginatorData
-        };
-      })).subscribe(({ providers, paginatorData})=>{
-        this.totalProviders = paginatorData.total_elements;
-        this.providers = providers;
-        this.paginatorData = paginatorData;
-        
-      })
+    this.$paginator = this.providerService
+      .getProviders(page, order, orderBy, limit)
+      .pipe(
+        tap(({ data, dataPaginator }) => {
+          this.totalProviders = dataPaginator.totalElements;
+          this.providers = data as Provider[];
+        })
+      );
   }
 
   currentPageChange($event: number) {
@@ -137,15 +114,10 @@ export class AppComponent implements OnInit {
     this.setNewPage($event, this.limit);
   }
 
-  handleOrder(id:any) {
+  handleOrder(id: string) {
     this.order = id;
     this.orderBy = !this.orderBy;
     this.setNewPage(0, this.limit, this.order);
-  }
-
-  goToCreate() {
-  //  localStorage.setItem('providerExist', `${!!this.providers.length}`);
-   // this.router.navigate([`${ROUTES.providers}/create`]);
   }
 
   newValue(newValue: number) {
@@ -155,18 +127,5 @@ export class AppComponent implements OnInit {
 
   saveFilters() {
     this.providerHistoryService.savefilters(this.page, this.limit, this.orderBy, this.order);
-  }
-  /* getProviders() {
-	  this.providers = this.providerService.getProviders(this.subsidiaryId, 0, '');
-  }   */
-  
-  tranformData(providerM: Provider[]) {
-    return providerM.map( (provedor: any) => ({
-      id: provedor.number,
-      name: provedor.string,
-      city: provedor.string,
-      address: provedor.string,
-      active: provedor.boolean
-    }));
   }
 }

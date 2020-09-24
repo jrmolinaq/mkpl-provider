@@ -40,28 +40,28 @@ export class PaginatorComponent implements OnChanges, OnInit {
 
   private loadData(paginator: DataPaginator) {
     const {
-      number_of_elements,
+      numberOfElements,
       first,
       last,
-      total_pages,
+      totalPages,
       number: number,
-      total_elements,
+      totalElements,
       size
     } = paginator;
     this.lowerLimit = number * size + 1;
-    if (!total_elements) {
+    if (!totalElements) {
       this.lowerLimit = 0;
       this.upperLimit = 0;
     } else if (last) {
-      this.upperLimit = total_elements;
+      this.upperLimit = totalElements;
     } else {
-      this.upperLimit = number * number_of_elements + size;
+      this.upperLimit = number * numberOfElements + size;
     }
     this.currentPage = number;
     this.firstPage = first;
     this.lastPage = last;
-    this.totalElements = total_elements;
-    this.totalPages = total_pages;
+    this.totalElements = totalElements;
+    this.totalPages = totalPages;
   }
 
   getCurrentPage(page: number) {
