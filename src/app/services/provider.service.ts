@@ -39,7 +39,7 @@ export class ProviderService {
     .set('order', order.toString())
     .set('limit', limit.toString());
     return this.http
-      .get<any>(`http://localhost:8080/o/ProviderCompraDigitalPortlet/api/provider/list`, { params })
+      .get<any>(`/o/ProviderCompraDigitalPortlet/api/provider/list`, { params })
       .pipe(
         map(({ content, ...paginator }) => ({
           data: content as Provider[],
@@ -60,7 +60,7 @@ export class ProviderService {
 
    toggleProvider(id: number) {
     return this.http.put(
-      `http://localhost:8080/o/ProviderCompraDigitalPortlet/api/provider/active/${id}`,
+      `/o/ProviderCompraDigitalPortlet/api/provider/active/${id}`,
       {}
     );
   } 

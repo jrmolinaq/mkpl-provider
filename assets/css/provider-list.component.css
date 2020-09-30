@@ -13,17 +13,17 @@
     width: 43px;
   }
   
-  .table-header {
+  .table-header-prov-list {
     display: grid;
     grid-template-columns: 125px 195px 180px 220px 155px 145px;
     grid-template-rows: 50px;
   }
   
-  .table-content {
+  .table-content-prov-list {
     padding: 5px;
   }
   
-  .header-title {
+  .header-title-prov-list {
     align-self: center;
   }
   
